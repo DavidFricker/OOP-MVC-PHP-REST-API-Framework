@@ -25,6 +25,7 @@ abstract class AbstractController
 		$auth_user = $_SERVER['PHP_AUTH_USER'];
 		$auth_pswd = $_SERVER['PHP_AUTH_PW'];
 
+		$query_result = $this->db->run('', array(':APIKey' => $auth_pswd, ':CustomerID' => $auth_user));
 		if($this->db->row_count() < 1)
 		{
 		    return false;
