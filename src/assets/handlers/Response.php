@@ -1,0 +1,80 @@
+<?php
+class Response
+{
+    private $payload = array();
+    private $preset_code = INTERNAL_ERROR;
+    
+    function __construct($preset_code)
+    {
+        $this->preset_code = $preset_code;
+    }
+
+    public function payload($payload)
+    {
+        $this->payload = $payload;
+    }
+
+    private function send_header()
+    {
+        switch($this->preset_code)
+        {
+            case CMD_PROCESSED:
+                header('HTTP/1.1 200 OK');
+                break;
+
+            case CMD_UNPROCESSABLE:
+                header('HTTP/1.1 422 Unprocessable Entity');
+                break;
+
+            case CMD_UNKNOWN:
+                header('HTTP/1.1 400 Bad Request');
+                break;
+
+            case CMD_INVALID:
+                header('HTTP/1.1 405 Method not allowed');
+                break;
+
+            case CMD_MALFORMED:
+                header('HTTP/1.1 409 Conflict');
+                break;
+
+            case USR_UNAUTHORIZED:
+                header('HTTP/1.1 401 Unauthorized');
+                break;
+
+            case SRC_NOTFOUND:
+                header('HTTP/1.1 404 Not Found');
+                break;
+
+            case SRC_EMPTY:
+                header('HTTP/1.1 204 No content');   
+                die();             
+                break;
+
+            default:
+            case INTERNAL_ERROR:
+                header('HTTP/1.1 500 Internal Server Error');
+                break;
+        }
+    }
+
+    private function render_json()
+    {
+        // should we check if the payload is empty or not first?
+        header('Content-Type: application/json');
+        echo json_encode($this->payload);
+    }
+
+    public function render()
+    {
+        if(headers_sent())
+        {
+            die();
+        }
+
+        $this->send_header();
+        $this->render_json();
+        
+        die();
+    }
+}
