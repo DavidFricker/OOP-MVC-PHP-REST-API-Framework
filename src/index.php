@@ -1,6 +1,6 @@
 <?php
 // include API constants
-require_once 'assets/libs/api.const.php'
+require_once 'assets/libs/api.const.php';
 
 // include the autoloader
 require_once 'assets/libs/autoloader.init.php';
@@ -14,14 +14,14 @@ $Request = new Request();
 // Ensure request is formed correctly so we can route it to a controller
 if(empty($Request->get_url_elements()))
 {
-    new Response(CMD_MALFORMED)->render();
+    (new Response(CMD_MALFORMED))->render();
 }
 
 // any incorrect base name will get caught in the autoloader apart from is fine apart
 // from 'Abstract'
 if(stristr('abstract', $Request->get_url_elements(0)) !== false)
 {
-    new Response(CMD_UNKNOWN)->render();
+    (new Response(CMD_UNKNOWN))->render();
 }
 
 // build model and controller names
@@ -33,7 +33,7 @@ $controller_name = $end_point . 'Controller';
 // we assume that if the controller exists the model will toos
 if(!class_exists($controller_name))
 {
-    new Response(CMD_UNKNOWN)->render();
+    (new Response(CMD_UNKNOWN))->render();
 }
 
 // initalise the controller class and pass the databse connection, 
@@ -48,7 +48,7 @@ $method_name = $Request->get_method_name();
 // e.g. HEAD or stupid methods like that
 if(!method_exists($controller, $method_name))
 {
-    new Response(CMD_INVALID)->render();
+    (new Response(CMD_INVALID))->render();
 }
 
 // call method on controller object
