@@ -1,0 +1,15 @@
+{
+    "name":"davidfricker/restapi",
+    "description":"Simple OOP MVC PHP REST API Framework",
+    "license": "MIT",
+    "require":{
+        "php":"^5.3.3 || ^7.0",
+        "davidfricker/cleanjson": "*",
+        "davidfricker/dataabstracter": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "davidfricker\\restapi\\": "src"
+        }
+    }
+}
