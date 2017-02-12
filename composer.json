@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "davidfricker\\restapi\\": "src"
+            "DavidFricker\\RestAPI\\": "src"
         }
     }
 }
