@@ -1,58 +1,65 @@
 <?php
-class Response
+
+namespace DavidFricker\RestAPI\Capsule;
+
+use DavidFricker\RestAPI\Router;
+
+class Response 
 {
     private $payload = array();
-    private $preset_code = INTERNAL_ERROR;
+    private $preset_code = Router::INTERNAL_ERROR;
     
     function __construct($preset_code)
     {
         $this->preset_code = $preset_code;
     }
 
+    // return the object to enable chaining
     public function payload($payload)
     {
         $this->payload = $payload;
+        return $this;
     }
 
     private function send_header()
     {
         switch($this->preset_code)
         {
-            case CMD_PROCESSED:
+            case Router::CMD_PROCESSED:
                 header('HTTP/1.1 200 OK');
                 break;
 
-            case CMD_UNPROCESSABLE:
+            case Router::CMD_UNPROCESSABLE:
                 header('HTTP/1.1 422 Unprocessable Entity');
                 break;
 
-            case CMD_UNKNOWN:
+            case Router::CMD_UNKNOWN:
                 header('HTTP/1.1 400 Bad Request');
                 break;
 
-            case CMD_INVALID:
+            case Router::CMD_INVALID:
                 header('HTTP/1.1 405 Method not allowed');
                 break;
 
-            case CMD_MALFORMED:
+            case Router::CMD_MALFORMED:
                 header('HTTP/1.1 409 Conflict');
                 break;
 
-            case USR_UNAUTHORIZED:
+            case Router::USR_UNAUTHORIZED:
                 header('HTTP/1.1 401 Unauthorized');
                 break;
 
-            case SRC_NOTFOUND:
+            case Router::SRC_NOTFOUND:
                 header('HTTP/1.1 404 Not Found');
                 break;
 
-            case SRC_EMPTY:
+            case Router::SRC_EMPTY:
                 header('HTTP/1.1 204 No content');   
                 die();             
                 break;
 
             default:
-            case INTERNAL_ERROR:
+            case Router::INTERNAL_ERROR:
                 header('HTTP/1.1 500 Internal Server Error');
                 break;
         }
