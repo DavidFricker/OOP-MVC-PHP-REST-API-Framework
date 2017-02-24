@@ -21,6 +21,11 @@ class Response
         return $this;
     }
 
+    public function message($message) {
+        $this->payload = array_merge($this->payload, ['message' => $message]);
+        return $this;
+    }
+
     private function send_header()
     {
         switch($this->preset_code)
