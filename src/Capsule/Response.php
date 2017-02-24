@@ -6,7 +6,7 @@ use DavidFricker\RestAPI\Router;
 
 class Response 
 {
-    private $payload = array();
+    private $payload = [];
     private $preset_code = Router::INTERNAL_ERROR;
     
     function __construct($preset_code)
