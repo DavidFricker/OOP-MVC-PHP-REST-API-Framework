@@ -41,7 +41,7 @@ class Request {
             case 'PUT':       
             case 'DELETE':
                 $decoded_parameters = CleanJson::decode(file_get_contents('php://input'), true);
-                if ($decoded_parameters !== false) {
+                if ($decoded_parameters != false) {
                     $this->request_parameters = array_merge($this->request_parameters, $decoded_parameters);
                 }
                 break;
