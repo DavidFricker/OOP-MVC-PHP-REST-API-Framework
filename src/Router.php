@@ -1,4 +1,5 @@
 <?php
+
 namespace DavidFricker\RestAPI;
 
 use DavidFricker\RestAPI\Capsule\Response;
@@ -44,9 +45,9 @@ class Router {
 
       // any incorrect base name will get caught in the autoloader apart from is fine apart
       // from 'Abstract'
-      if (stristr('abstract', $Request->getUrlElements(0)) !== false) {
-          (new Response(self::CMD_UNKNOWN))->render();
-      }
+      //if (stristr('abstract', $Request->getUrlElements(0)) !== false) {
+      //    (new Response(self::CMD_UNKNOWN))->render();
+      //}
 
       // build model and controller names
       $model_namespace = $this->model_namespace;
