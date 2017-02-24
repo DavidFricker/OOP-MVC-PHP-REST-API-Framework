@@ -58,11 +58,6 @@ class Response
                 header('HTTP/1.1 404 Not Found');
                 break;
 
-            case Router::SRC_EMPTY:
-                header('HTTP/1.1 204 No content');   
-                die();             
-                break;
-
             default:
             case Router::INTERNAL_ERROR:
                 header('HTTP/1.1 500 Internal Server Error');
@@ -79,8 +74,7 @@ class Response
 
     public function render()
     {
-        if(headers_sent())
-        {
+        if(headers_sent()) {
             die();
         }
 
