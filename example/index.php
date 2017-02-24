@@ -20,6 +20,6 @@ use DavidFricker\RestAPI\Capsule\Request;
 
 // Parse the incoming request into an object - done via the constructor
 $Request = new Request();
-$Router = new Router();
+$Router = new Router('namespace\controllers\\', 'namespace\models\\');
 
 $Router->serve($Request);

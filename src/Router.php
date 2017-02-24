@@ -25,7 +25,16 @@ class Router {
     const INTERNAL_ERROR = 8;
     const CMD_UNPROCESSABLE = 9;
 
-    public function __construct() {}
+    const API_METHOD_GET = 'GET';
+    const API_METHOD_POST = 'POST';
+
+    private $controller_namespace;
+    private $model_namespace;
+
+    public function __construct($controller_namespace, $model_namespace) {
+      $this->controller_namespace = $controller_namespace;
+      $this->model_namespace = $model_namespace;
+    }
 
     public function serve($Request) {
       // Ensure request is formed correctly so we can route it to a controller
@@ -40,9 +49,12 @@ class Router {
       }
 
       // build model and controller names
+      $model_namespace = $this->model_namespace;
+      $controller_namespace = $this->controller_namespace;
+
       $end_point = ucfirst($Request->getUrlElements(0));
-      $model_name = 'DavidFricker\RestAPI\Model\\'. $end_point . 'Model';
-      $controller_name = 'DavidFricker\RestAPI\Controller\\'. $end_point . 'Controller';
+      $model_name = $model_namespace . $end_point . 'Model';
+      $controller_name = $controller_namespace . $end_point . 'Controller';
 
       // check controller exists, else command is invalid
       // we assume that if the controller exists the model will toos
