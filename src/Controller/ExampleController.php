@@ -6,7 +6,7 @@ use DavidFricker\RestAPI\Controller\AbstractController;
 use DavidFricker\RestAPI\Capsule\Response;
 use DavidFricker\RestAPI\Router;
 
-class ExampleController extends AbstractController
+class ReceiptController extends AbstractController
 {
     public function get()
     {
