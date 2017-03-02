@@ -33,21 +33,23 @@ class Router {
     private $model_namespace;
 
     public function __construct($controller_namespace, $model_namespace) {
+      if ($controller_namespace === null || $model_namespace === null) {
+            throw new \ArgumentCountError ('Please supply controller and model namespaces');
+      }
+
       $this->controller_namespace = $controller_namespace;
       $this->model_namespace = $model_namespace;
     }
 
     public function serve($Request) {
-      // Ensure request is formed correctly so we can route it to a controller
-      if (empty($Request->getUrlElements())) {
-          (new Response(self::CMD_MALFORMED))->render();
+      if(!is_object($Request)) {
+        throw new \InvalidArgumentException('Please supply a request object to serve');
       }
 
-      // any incorrect base name will get caught in the autoloader apart from is fine apart
-      // from 'Abstract'
-      //if (stristr('abstract', $Request->getUrlElements(0)) !== false) {
-      //    (new Response(self::CMD_UNKNOWN))->render();
-      //}
+      // Ensure request is formed correctly so we can route it to a controller
+      if (empty($Request->getUrlElements())) {
+          return (new Response(self::CMD_MALFORMED))->message('You cannot call the base, please choose an end-point.');
+      }
 
       // build model and controller names
       $model_namespace = $this->model_namespace;
@@ -57,16 +59,17 @@ class Router {
       $model_name = $model_namespace . $end_point . 'Model';
       $controller_name = $controller_namespace . $end_point . 'Controller';
 
-      // check controller exists, else command is invalid
-      // we assume that if the controller exists the model will toos
-      if (!class_exists($controller_name)) {
-          (new Response(self::CMD_UNKNOWN))->render();
+      // check that the controller and model exist, else command is invalid
+      // assumes classes are psr-4 autloader compliant
+      if (!class_exists($controller_name) || !class_exists($controller_name)) {
+          return (new Response(self::CMD_UNKNOWN))->message('End-point not found, please refer to the documentation.');
       }
 
       // initalise the controller class and pass the databse connection, 
       // request, and model objects to the constructor
       // assumes if there is a model corresponding to the controller that passed the class_exists test
       $controller = new $controller_name($Request, new $model_name());
+      
 
       // convert url and method to an underscore seperted string and then check if that exists in the class
       $method_name = $Request->getMethodName();
@@ -74,13 +77,10 @@ class Router {
       // ensure the method corresponding to the action exists, allowing a graceful fail otherwise 
       // e.g. HEAD or stupid methods like that
       if (!method_exists($controller, $method_name)) {
-          (new Response(self::CMD_INVALID))->render();
+          return (new Response(self::CMD_INVALID))->message('Operation not possible on this end-point.');
       }
 
       // call method on controller object
-      $Response = call_user_func(array($controller, $method_name));
-
-      // outputs response in json format to stream inc. extra payload if needed
-      $Response->render();
+      return call_user_func(array($controller, $method_name));
     }
 }

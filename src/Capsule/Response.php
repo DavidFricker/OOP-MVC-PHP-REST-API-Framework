@@ -4,20 +4,28 @@ namespace DavidFricker\RestAPI\Capsule;
 
 use DavidFricker\RestAPI\Router;
 
+/**
+ * 
+ */
 class Response 
 {
-    private $payload = [];
+    private $payload;
     private $preset_code = Router::INTERNAL_ERROR;
     
     function __construct($preset_code)
-    {
+    {   
+        if ($preset_code === null) {
+            throw new \ArgumentCountError ('Present response code not supplied');
+        }
+
         $this->preset_code = $preset_code;
+        $this->payload = [];
     }
 
     // return the object to enable chaining
     public function payload($payload)
     {
-        $this->payload = $payload;
+        $this->payload =  array_merge($this->payload, $payload);
         return $this;
     }
 
@@ -28,6 +36,10 @@ class Response
 
     private function send_header()
     {
+        if(headers_sent()) {
+            return;
+        }
+
         switch($this->preset_code)
         {
             case Router::CMD_PROCESSED:
@@ -67,20 +79,17 @@ class Response
 
     private function render_json()
     {
+        if(!headers_sent()) {
+            header('Content-Type: application/json');
+        }
+
         // should we check if the payload is empty or not first?
-        header('Content-Type: application/json');
         echo json_encode($this->payload);
     }
 
     public function render()
     {
-        if(headers_sent()) {
-            die();
-        }
-
         $this->send_header();
         $this->render_json();
-        
-        die();
     }
 }
