@@ -22,4 +22,7 @@ use DavidFricker\RestAPI\Capsule\Request;
 $Request = new Request();
 $Router = new Router('namespace\controllers\\', 'namespace\models\\');
 
-$Router->serve($Request);
+$Response = $Router->serve($Request);
+
+// outputs response in json format to stream inc. extra payload if needed
+$Response->render();
