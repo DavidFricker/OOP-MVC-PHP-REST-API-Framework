@@ -11,6 +11,7 @@ class Response
 {
     private $payload;
     private $preset_code = Router::INTERNAL_ERROR;
+    const RATE_LIMITED = 429;
     
     function __construct($preset_code)
     {   
@@ -68,6 +69,10 @@ class Response
 
             case Router::SRC_NOTFOUND:
                 header('HTTP/1.1 404 Not Found');
+                break;
+
+            case self::RATE_LIMITED:
+                header('HTTP/1.1 429 Too Many Requests');
                 break;
 
             default:
