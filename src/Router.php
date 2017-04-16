@@ -5,18 +5,10 @@ namespace DavidFricker\RestAPI;
 use DavidFricker\RestAPI\Capsule\Response;
 
 /**
-  * A wrapper around a DB driver to expose a uniform interface
-  *
-  * Bassically an abstraction over the complexity of the PDO class, but by design this could wrap any strctured storage mechanism 
-  * A database engine adapter
-  *
-  * @param string $myArgument With a *description* of this argument, these may also
-  *    span multiple lines.
-  *
-  * @return void
-  */
+ * Route HTTP requests for the REST API
+ */
 class Router {
-    // response code constants
+    // response code constants, details in API documentation
     const CMD_PROCESSED = 1;
     const CMD_UNKNOWN = 2;
     const CMD_INVALID = 3;
@@ -28,8 +20,19 @@ class Router {
 
     const API_METHOD_GET = 'GET';
     const API_METHOD_POST = 'POST';
+    const API_METHOD_PUT = 'PUT';
+    const API_METHOD_DELETE = 'DELETE';
 
+    /**
+     * Namespace to search for the controller, psr-4 compatible
+     * @var string
+     */
     private $controller_namespace;
+
+    /**
+     * Namespace to search for the model, psr-4 compatible
+     * @var string
+     */
     private $model_namespace;
 
     public function __construct($controller_namespace, $model_namespace) {
@@ -41,8 +44,14 @@ class Router {
       $this->model_namespace = $model_namespace;
     }
 
+    /**
+     * Serves the request to the API by validating and building the request internally
+     * 
+     * @param  Request $Request Instance of the Request class, representing the HTTP request
+     * @return Response Instance of the Response object, ready to be rendered
+     */
     public function serve($Request) {
-      if(!is_object($Request)) {
+      if (!is_object($Request)) {
         throw new \InvalidArgumentException('Please supply a request object to serve');
       }
 
@@ -60,18 +69,18 @@ class Router {
       $controller_name = $controller_namespace . $end_point . 'Controller';
 
       // check that the controller and model exist, else command is invalid
-      // assumes classes are psr-4 autloader compliant
+      // assumes classes are psr-4 autoloader compliant
       if (!class_exists($controller_name) || !class_exists($controller_name)) {
           return (new Response(self::CMD_UNKNOWN))->message('End-point not found, please refer to the documentation.');
       }
 
-      // initalise the controller class and pass the databse connection, 
+      // initialise the controller class and pass the database connection, 
       // request, and model objects to the constructor
       // assumes if there is a model corresponding to the controller that passed the class_exists test
       $controller = new $controller_name($Request, new $model_name());
       
 
-      // convert url and method to an underscore seperted string and then check if that exists in the class
+      // convert URL and method to an underscore separated string and then check if that exists in the class
       $method_name = $Request->getMethodName();
 
       // ensure the method corresponding to the action exists, allowing a graceful fail otherwise 
