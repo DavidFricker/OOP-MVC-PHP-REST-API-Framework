@@ -1,6 +1,11 @@
 # PHP REST API Framework
 This REST API framework is designed to be very lightweight to work well in high request volume deployments.
 
+## Install
+### Using composer
+`composer require davidfricker/restapi`
+### Non composer
+This package is PSR-4 compliant so creating your own autoloader should easy if you do not wish to use composer. 
 
 ## Usage example 
 A working example can be found in the `example` directory.
