@@ -1,4 +1,4 @@
-# Simple OOP MVC PHP REST API Framework
+# PHP REST API Framework
 This REST API framework is designed to be very lightweight to work well in high request volume deployments.
 
 ## How does it work?
