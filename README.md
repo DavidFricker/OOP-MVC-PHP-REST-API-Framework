@@ -1,6 +1,10 @@
 # PHP REST API Framework
 This REST API framework is designed to be very lightweight to work well in high request volume deployments.
 
+
+## Usage example 
+A working example can be found in the `example` directory.
+
 ## How does it work?
 The package will automatically route requests to the correct controller, model, and member method without the need to explicitly declare end-points. This automation is performed by analysing the HTTP request and URI for the controller and model name and the member method name (this point is illustrated better in the example folder).
 
